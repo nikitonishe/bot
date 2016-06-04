@@ -6,7 +6,7 @@ bot = telebot.TeleBot(config.token)
 
 @bot.message_handler(commands=["start","help"])
 def start(message):
-    bot.send_message(message.chat.id,"Основные команды: \n /start - Начальное меню </br> \n /play - Начать игру")
+    bot.send_message(message.chat.id,"Основные команды: \n /start - Начальное меню \n /play - Начать игру")
 
 @bot.message_handler(commands=["play"])
 def game(message):
