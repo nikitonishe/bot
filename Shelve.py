@@ -1,17 +1,21 @@
+﻿#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 import telebot
 import shelve
 import SQLiter
 import config
+import contextlib
+
 import random
 
 def get_question(chat_id):
 
     db_worker = SQLiter.SQLiter(config.data_base_name)
     row = db_worker.get_info_by_id(config.table_name, random.randint(1, db_worker.get_quantity_of_rows(config.table_name)))[0]
-    db_worker.close();
+    db_worker.close()
 
-    with shelve.open("shelve/"+config.shelve_name) as storage:
-        storage[str(chat_id)] = row[2]
+    with contextlib.closing(shelve.open("shelve/"+config.shelve_name)) as storage:
+        storage[str(chat_id)] = row[2].encode('utf-8')
 
     answers = list(row[3].split("/"))
     answers.append(row[2])
@@ -25,7 +29,7 @@ def get_question(chat_id):
     return question, markup
 
 def get_right_answer(chat_id):
-    with shelve.open("shelve/"+config.shelve_name) as storage:
+    with contextlib.closing(shelve.open("shelve/"+config.shelve_name)) as storage:
         try:
             answer = storage[str(chat_id)]
             return answer
@@ -33,6 +37,6 @@ def get_right_answer(chat_id):
             return None
 
 def stop_game(chat_id):
-    with shelve.open("shelve/"+config.shelve_name) as storage:
+    with contextlib.closing(shelve.open("shelve/"+config.shelve_name)) as storage:
         del storage[str(chat_id)]
 

@@ -1,3 +1,6 @@
+﻿#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import telebot
 import config
 import Shelve
@@ -20,11 +23,11 @@ def check_answer(message):
         bot.send_message(message.chat.id,"Чтобы начать игру введите команду '/play'")
     else:
         keyboard_hider = telebot.types.ReplyKeyboardHide()
-        if message.text == answer:
+        if message.text.encode("utf-8") == answer:
             bot.send_message(message.chat.id, "Верно" , reply_markup = keyboard_hider)
         else:
-            bot.send_message(message.chat.id, "Неверно. Правильный ответ - %s" % answer , reply_markup = keyboard_hider)
-        Shelve.stop_game(message.chat.id)
+            bot.send_message(message.chat.id, "Неверно. Правильный ответ - %s" % (answer), reply_markup = keyboard_hider)
+    Shelve.stop_game(message.chat.id)
 
 bot.polling(none_stop = True, interval = 0)
 
